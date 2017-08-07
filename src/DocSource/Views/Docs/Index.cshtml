@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        @if (ViewBag.IsEdit)
+        {
+            <textarea></textarea>
+        }
+        else
+        {
+            <div id="content"></div>
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        var simplemde;
+        @if (ViewBag.IsEdit)
+        {
+            <text>
+                simplemde = new SimpleMDE({
+                    insertTexts: {
+                        horizontalRule: ["", "\n\n-----\n\n"],
+                        image: ["![](http://", ")"],
+                        link: ["[", "](http://)"],
+                        table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
+                    }
+                });
+            </text>
+        }
+
+                $.get('/api/markdown/@Html.Raw(ViewBag.Path)', function (data, status, xhr) {
+                    var content = document.getElementById('content');
+                    if (content) {
+                        content.innerHTML = marked(data);
+                    }
+
+            if (simplemde) {
+                simplemde.value(data);
+            }
+        });
+
+    </script>
+}
